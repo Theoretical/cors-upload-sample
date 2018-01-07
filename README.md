@@ -1,6 +1,3 @@
 # Google drive upload
 
-[Live test](http://ns535751.ip-144-217-66.net/)
-
-You need to add your domain to your [Google Console](https://console.developers.google.com/apis/credentials) and get an OAuth key.
-Replace data-clientid in the HTML with your own oauth ClientID.
+http://ec2-18-217-252-208.us-east-2.compute.amazonaws.com/cors-upload-sample/
