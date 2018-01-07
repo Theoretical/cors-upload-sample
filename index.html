@@ -72,6 +72,11 @@
                      var element = document.createElement("pre");
                      element.appendChild(document.createTextNode(data));
                      document.getElementById('results').appendChild(element);
+                 },
+                 onProgress: function(data) {
+                   if (data.lengthComputable) {
+                    $("#results").text(Math.floor((data.loaded / data.total) * 100) + "%");
+                   }
                  }
              });
              uploader.upload();
