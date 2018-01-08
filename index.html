@@ -16,23 +16,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   </head>
   <body>
-      <span id="signin">
-        <span
-          class="g-signin"
-          data-callback="signinCallback"
-          data-clientid="692008307570.apps.googleusercontent.com"
-          data-cookiepolicy="single_host_origin"
-          data-scope="https://www.googleapis.com/auth/drive.file">
-        </span>
-      </span>
-
       <div id="drop_zone" style="display:none;">Drop files here</div>
      
      <div id="results"/>
      <script src="upload.js"></script>
      <script type="text/javascript">
-     
        var accessToken = null;
+       $.getJSON('http://' + location.host + ':8085/token?callback=?', function(data) { 
+           console.log(data);
+           console.log(data.token);
+           accessToken = data.token;
+           document.getElementById('drop_zone').style.display = null;
+       });
        
        /**
         * Callback for G+ Sign-in. Swaps views if login successful.
@@ -61,17 +56,19 @@
                  file: f,
                  token: accessToken,
                  onComplete: function(data) {
-                    var x = JSON.parse(data)
+                     var x = JSON.parse(data)
                      var url = "https://content.googleapis.com/drive/v2/files/" + x.id + "/permissions?alt=json";
-                     $.ajax({method: "POST", url: url, 
-                             headers: {'Authorization': 'Bearer ' + uploader.token, 'Content-Type': 'application/json'}, 
-                             data: JSON.stringify({ role: 'reader', type: 'anyone'}),
-                             success: function(d) { console.log(d); }
+                     $.ajax({method: "POST", url: url, headers: {'Authorization': 'Bearer ' + uploader.token, 'Content-Type': 'application/json'}, data: JSON.stringify({ role: 'reader', type: 'anyone'}),
+                     success: function(d) { console.log(d); }
                      });
-                   
                      var element = document.createElement("pre");
                      element.appendChild(document.createTextNode(data));
                      document.getElementById('results').appendChild(element);
+                 },
+                 onProgress: function(data) {
+                     if (data.lengthComputable) {
+                         $("#results").text(Math.floor((data.loaded / data.total) * 100) + "%");
+                     }
                  }
              });
              uploader.upload();
